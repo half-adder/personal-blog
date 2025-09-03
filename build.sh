@@ -1,11 +1,13 @@
 #!/bin/bash
 
 # Install obsidian-export if not present
-if [ ! -f "bin/obsidian-export" ]; then
+if [ ! -x "bin/obsidian-export" ]; then
     echo "Installing obsidian-export..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     source ~/.cargo/env
     cargo install obsidian-export
+    # Remove existing symlink if it exists but isn't working
+    rm -f bin/obsidian-export
     ln -s ~/.cargo/bin/obsidian-export bin/obsidian-export
 fi
 
