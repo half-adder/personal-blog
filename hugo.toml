@@ -1,5 +1,13 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://personal-blog-4pt.pages.dev/'
 languageCode = 'en-us'
 title = 'My New Hugo Site'
 
 theme = 'mainroad'
+
+# URL configuration
+canonifyURLs = true
+relativeURLs = false
+
+# Pagination
+[pagination]
+pagerSize = 10
