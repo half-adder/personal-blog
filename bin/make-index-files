@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+from pathlib import Path
+
+def make_indexes(containing_dir: Path):
+    """Create _index.md files for Hugo sections that don't have them."""
+    for root, dirs, files in os.walk(containing_dir):
+        current_dir = Path(root)
+        
+        # Skip the root content directory
+        if current_dir == containing_dir:
+            continue
+            
+        # Check if this directory needs an _index.md file
+        index_path = current_dir / "_index.md"
+        if not index_path.exists():
+            # Create a basic _index.md file
+            title = current_dir.name.replace("-", " ").replace("_", " ").title()
+            content = f"---\ntitle: {title}\n---\n"
+            index_path.write_text(content)
+            print(f"Created index file: {index_path}")
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: make-index-files <content-directory>")
+        sys.exit(1)
+    
+    content_dir = Path(sys.argv[1])
+    if not content_dir.exists():
+        print(f"Directory {content_dir} does not exist")
+        sys.exit(1)
+    
+    make_indexes(content_dir)

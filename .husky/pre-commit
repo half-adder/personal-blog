@@ -1,0 +1,11 @@
+# Remove existing content directory
+rm -rf content/*
+
+# Export from Obsidian vault to Hugo content
+bin/obsidian-export vault/ content/ --frontmatter always
+
+# Create index files for Hugo sections
+bin/make-index-files content/
+
+# Add the generated content to git staging
+git add -A content/
