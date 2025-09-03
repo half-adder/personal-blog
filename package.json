@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky"
+    "prepare": "husky",
+    "convert": "rm -rf content/* && bin/obsidian-export vault/ content/ --frontmatter always && bin/make-index-files content/",
+    "dev": "npm run convert && hugo server --buildDrafts --disableFastRender",
+    "dev:watch": "bin/watch-and-convert & hugo server --buildDrafts --disableFastRender",
+    "build": "npm run convert && hugo --minify"
   },
   "keywords": [],
   "author": "",

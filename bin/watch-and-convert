@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Watch vault directory and convert on changes
+echo "Watching vault/ directory for changes..."
+echo "Press Ctrl+C to stop"
+
+# Function to convert content
+convert_content() {
+    echo "Converting vault to content..."
+    rm -rf content/*
+    bin/obsidian-export vault/ content/ --frontmatter always
+    bin/make-index-files content/
+    echo "Conversion complete"
+}
+
+# Initial conversion
+convert_content
+
+# Watch for changes using fswatch (install with: brew install fswatch)
+if command -v fswatch >/dev/null 2>&1; then
+    fswatch -o vault/ | while read f; do
+        convert_content
+    done
+else
+    echo "fswatch not found. Install with: brew install fswatch"
+    echo "Falling back to basic polling..."
+    
+    # Fallback: simple polling every 2 seconds
+    last_modified=$(find vault/ -type f -name "*.md" -exec stat -f "%m" {} \; | sort -n | tail -1)
+    
+    while true; do
+        sleep 2
+        current_modified=$(find vault/ -type f -name "*.md" -exec stat -f "%m" {} \; | sort -n | tail -1)
+        if [ "$current_modified" != "$last_modified" ]; then
+            convert_content
+            last_modified=$current_modified
+        fi
+    done
+fi
